@@ -11,21 +11,46 @@ import React, { useState } from 'react'
       'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
       'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blod tests when dianosing patients'
     ]
-     
+    //  Randomizer
     const [selected, setSelected] = useState(0)
 
     const RandomAnec = () => {
       return setSelected(Math.floor(Math.random() * anecdotes.length));
     };
+// Handle votes
+    const [anecVotes, setAnecVotes] = useState({});
 
+    const handleSetVotes = () => {
+      const copyAnec = { ...anecVotes };
+      if (!copyAnec[selected]) {
+        copyAnec[selected] = 1;
+      } else {
+        copyAnec[selected] += 1;
+      }
+  
+      setAnecVotes(copyAnec);
+    };
 
     return (
-      <div>
-        {anecdotes[selected]}
-        <br/>
-        <button onClick= {RandomAnec}> Next Anecdotes </button>
-      </div>
-    )
-  }
-  
-  export default App
+      <>
+
+      <h1>Anecdote of the day</h1>
+
+      <div>{anecdotes[selected]}</div>
+
+      <button onClick={handleSetVotes}>Vote</button>{" "}
+      <button onClick= {RandomAnec}> Next Anecdotes </button>
+
+      <p>{anecVotes[selected] ? anecVotes[selected] : 0} votes</p>
+
+      <h1>Top Voted Anecdote</h1>
+{Object.entries(anecVotes).length > 0 &&
+        anecdotes[
+          Object.keys(anecVotes).reduce((a, b) =>
+            anecVotes[a] > anecVotes[b] ? a : b
+          )
+        ]}
+    </>
+  );
+      };
+  export default App;
